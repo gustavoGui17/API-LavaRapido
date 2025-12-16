@@ -32,9 +32,9 @@ export const searchByPlacaService = (placa) => Veiculo.find({placa: { $regex: pl
 
 export const byUserService = (id) => Veiculo.find({ usuario: id }).sort({ _id: -1 }).populate("usuario");
 
-export const updateService = (id, placa, modelo, cor, nomeCliente, contato, status) =>
+export const updateService = (id, placa, modelo, cor, tipoLavagem, nomeCliente, contato, status) =>
   Veiculo.findOneAndUpdate({ _id: id },
-    { placa, modelo, cor, nomeCliente, contato, status },
+    { placa, modelo, cor, tipoLavagem, nomeCliente, contato, status },
     {
       rawRessult: true,
     }

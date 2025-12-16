@@ -185,10 +185,10 @@ const byUser = async (req, res) => {
 
 const update = async (req, res) => {
     try {
-        const { placa, modelo, cor, nomeCliente, contato, status } = req.body;
+        const { placa, modelo, cor, tipoLavagem, nomeCliente, contato, status } = req.body;
         const { id } = req.params;
 
-        if (!placa && !modelo && !cor && !nomeCliente && !contato && !status) {
+        if (!placa && !modelo && !cor && !tipoLavagem && !nomeCliente && !contato && !status) {
             return res.status(400).send({ message: "Selecione o campo para atualizar" });
         }
 
@@ -200,7 +200,7 @@ const update = async (req, res) => {
             })
         }
 
-        await updateService(id, placa, modelo, cor, nomeCliente, contato, status);
+        await updateService(id, placa, modelo, tipoLavagem, cor, nomeCliente, contato, status);
 
         return res.send({ message: "Atualização com sucesso" })
 

@@ -42,6 +42,7 @@
         "properties": {
           "placa": { "type": "string" },
           "modelo": { "type": "string" },
+          "tipoLavagem": { "type": "string", "enum": ["simples", "completa", "premiu"] },
           "cor": { "type": "string" },
           "nomeCliente": { "type": "string" },
           "contato": { "type": "string" },

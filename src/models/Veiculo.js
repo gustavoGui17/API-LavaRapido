@@ -14,6 +14,11 @@ const veiculoSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    tipoLavagem: {
+        type: String,
+         enum: ["simples", "completa", "premiu"],
+        required: true
+    },
     nomeCliente: {
         type: String,
         required: true

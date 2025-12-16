@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import connetcDataBase from "./src/database/db.js";
 import dotenv from "dotenv";
 
@@ -11,6 +12,7 @@ dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3000;
+app.use(cors());
 
 connetcDataBase()
 app.use(express.json());
