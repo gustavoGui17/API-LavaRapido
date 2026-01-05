@@ -42,13 +42,13 @@
         "properties": {
           "placa": { "type": "string" },
           "modelo": { "type": "string" },
-          "tipoLavagem": { "type": "string", "enum": ["simples", "completa", "premiu"] },
           "cor": { "type": "string" },
+          "tipoLavagem": { "type": "string", "enum": ["simples", "completa", "premium"] },
           "nomeCliente": { "type": "string" },
           "contato": { "type": "string" },
           "status": { "type": "string", "enum": ["pendente", "em atendimento", "finalizado"] }
         },
-        "required": ["placa", "modelo", "cor", "nomeCliente", "contato"]
+        "required": ["placa", "modelo", "cor", "tipoLavagem", "nomeCliente", "contato"]
       },
       "Login": {
         "type": "object",

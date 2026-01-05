@@ -16,7 +16,7 @@ const veiculoSchema = new mongoose.Schema({
     },
     tipoLavagem: {
         type: String,
-         enum: ["simples", "completa", "premiu"],
+         enum: ["simples", "completa", "premium"],
         required: true
     },
     nomeCliente: {
@@ -44,6 +44,7 @@ const veiculoSchema = new mongoose.Schema({
     }
 })
 
-const Veiculo = mongoose.model("Veiculo", veiculoSchema);
+const Veiculo =
+  mongoose.models.Veiculo || mongoose.model("Veiculo", veiculoSchema);
 
 export default Veiculo;

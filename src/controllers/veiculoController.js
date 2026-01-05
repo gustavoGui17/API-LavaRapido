@@ -12,9 +12,9 @@ import {
 
 const create = async (req, res) => {
     try {
-        const { placa, modelo, cor, nomeCliente, contato } = req.body;
+        const { placa, modelo, cor, tipoLavagem, nomeCliente, contato } = req.body;
 
-        if (!placa || !modelo || !cor || !nomeCliente || !contato) {
+        if (!placa || !modelo || !cor || !tipoLavagem || !nomeCliente || !contato) {
             return res.status(400).send({ message: "Por favor, preencha todos os campos" });
         }
 
@@ -22,6 +22,7 @@ const create = async (req, res) => {
             placa,
             modelo,
             cor,
+            tipoLavagem,
             nomeCliente,
             contato,
             usuario: req.userId,
@@ -104,6 +105,7 @@ const topVeiculo = async (req, res) => {
                 placa: veiculo.placa,
                 modelo: veiculo.modelo,
                 cor: veiculo.cor,
+                tipoLavagem: veiculo.tipoLavagem,
                 nomeCliente: veiculo.nomeCliente,
                 contato: veiculo.contato
             }
@@ -126,6 +128,7 @@ const findById = async (req, res) => {
                 placa: veiculo.placa,
                 modelo: veiculo.modelo,
                 cor: veiculo.cor,
+                tipoLavagem: veiculo.tipoLavagem,
                 nomeCliente: veiculo.nomeCliente,
                 contato: veiculo.contato
             }
@@ -152,6 +155,7 @@ const searchByPlaca = async (req, res) => {
                 placa: item.placa,
                 modelo: item.modelo,
                 cor: item.cor,
+                tipoLavagem: item.tipoLavagem,
                 nomeCliente: item.nomeCliente,
                 contato: item.contato
             }))
@@ -173,6 +177,7 @@ const byUser = async (req, res) => {
                 placa: item.placa,
                 modelo: item.modelo,
                 cor: item.cor,
+                tipoLavagem: item.tipoLavagem,
                 nomeCliente: item.nomeCliente,
                 contato: item.contato
             }))
