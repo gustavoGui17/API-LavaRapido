@@ -82,6 +82,7 @@ const findAll = async (req, res) => {
                 placa: item.placa,
                 modelo: item.modelo,
                 cor: item.cor,
+                tipoLavagem: item.tipoLavagem,
                 nomeCliente: item.nomeCliente,
                 contato: item.contato
             }))

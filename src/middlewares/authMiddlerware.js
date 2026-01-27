@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 import userService from "../services/userService.js";
-import jwt, { decode } from "jsonwebtoken"
+import jwt from "jsonwebtoken";
 
 dotenv.config();
 
