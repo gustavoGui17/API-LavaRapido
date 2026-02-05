@@ -20,9 +20,29 @@ export const createService = async (veiculoData) => {
   return veiculo;
 };
 
-export const findAllService = (offset, limit) => Veiculo.find().sort({ _id: -1 }).skip(offset).limit(limit).populate("usuario");
+export const findAllService = (offset, limit, search) => {
+  const query = {
+  $or: [
+    { placa: { $regex: search, $options: "i" } },
+    { modelo: { $regex: search, $options: "i" } },
+    { nomeCliente: { $regex: search, $options: "i" } }
+  ]
+};
+  return Veiculo.find(query)
+    .skip(offset)
+    .limit(limit)
+    .sort({ createdAt: -1 });
+};
 
-export const countVeiculos = () => Veiculo.countDocuments();
+export const countVeiculos = (search) => {
+  return Veiculo.countDocuments({
+    $or: [
+      { placa: { $regex: search, $options: "i" } },
+      { modelo: { $regex: search, $options: "i" } },
+      { nomeCliente: { $regex: search, $options: "i" } }
+    ]
+  });
+};
 
 export const topVeiculoService = () => Veiculo.findOne()
 

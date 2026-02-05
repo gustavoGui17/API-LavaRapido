@@ -42,54 +42,36 @@ const create = async (req, res) => {
 };
 
 const findAll = async (req, res) => {
-    try {
-        let { limit, offset } = req.query;
+  try {
+    let { limit = 5, offset = 0, search = "" } = req.query;
 
-        limit = Number(limit);
-        offset = Number(offset);
+    limit = Number(limit);
+    offset = Number(offset);
 
-        if (!limit) {
-            limit = 5
-        }
+    const veiculos = await findAllService(offset, limit, search);
+    const total = await countVeiculos(search);
 
-        if (!offset) {
-            offset = 0
-        }
+    res.status(200).send({
+      limit,
+      offset,
+      total,
+      totalPages: Math.ceil(total / limit),
+      currentPage: Math.floor(offset / limit) + 1,
+      results: veiculos.map(item => ({
+        id: item._id,
+        placa: item.placa,
+        modelo: item.modelo,
+        cor: item.cor,
+        tipoLavagem: item.tipoLavagem,
+        nomeCliente: item.nomeCliente,
+        contato: item.contato,
+        status: item.status
+      }))
+    });
 
-        const veiculo = await findAllService(offset, limit);
-        const total = await countVeiculos();
-        const currentUrl = req.baseUrl
-
-        const next = offset + limit;
-        const nextUrl = next < total ? `${currentUrl}?limit=${limit}&offset=${next}` : null;
-
-        const previous = offset - limit < 0 ? null : offset - limit;
-        const previousUrl = previous != null ? `${currentUrl}?limit=${limit}&offset=${previous}` : null;
-
-        if (veiculo.length === 0) {
-            return res.status(400).send({ message: "NãO tem Veiculos cadastrados" });
-        }
-
-        res.send({
-            nextUrl,
-            previous,
-            limit,
-            offset,
-            total,
-
-            results: veiculo.map(item => ({
-                id: item._id,
-                placa: item.placa,
-                modelo: item.modelo,
-                cor: item.cor,
-                tipoLavagem: item.tipoLavagem,
-                nomeCliente: item.nomeCliente,
-                contato: item.contato
-            }))
-        })
-    } catch (err) {
-        res.status(500).send({ message: err.message })
-    }
+  } catch (err) {
+    res.status(500).send({ message: err.message });
+  }
 };
 
 const topVeiculo = async (req, res) => {
@@ -218,7 +200,7 @@ const update = async (req, res) => {
 const erase = async (req, res) => {
     try {
 
-        const {id} = req.params;
+        const { id } = req.params;
 
         const veiculo = await findByIdService(id);
 
