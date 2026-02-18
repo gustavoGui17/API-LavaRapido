@@ -1,14 +1,13 @@
 import {
     createService,
-    findAllService,
-    countVeiculos,
     topVeiculoService,
     findByIdService,
     searchByPlacaService,
     updateService,
     byUserService,
-    eraseService
 } from "../services/veiculoService.js";
+
+import Veiculo from "../models/Veiculo.js";
 
 const create = async (req, res) => {
     try {
@@ -42,36 +41,50 @@ const create = async (req, res) => {
 };
 
 const findAll = async (req, res) => {
-  try {
-    let { limit = 5, offset = 0, search = "" } = req.query;
+    try {
+        let { limit = 5, offset = 0, search = "" } = req.query;
 
-    limit = Number(limit);
-    offset = Number(offset);
+        limit = Number(limit);
+        offset = Number(offset);
 
-    const veiculos = await findAllService(offset, limit, search);
-    const total = await countVeiculos(search);
+        const filtro =
+            req.user.role === "admin"
+                ? {}
+                : { usuario: req.user.id };
 
-    res.status(200).send({
-      limit,
-      offset,
-      total,
-      totalPages: Math.ceil(total / limit),
-      currentPage: Math.floor(offset / limit) + 1,
-      results: veiculos.map(item => ({
-        id: item._id,
-        placa: item.placa,
-        modelo: item.modelo,
-        cor: item.cor,
-        tipoLavagem: item.tipoLavagem,
-        nomeCliente: item.nomeCliente,
-        contato: item.contato,
-        status: item.status
-      }))
-    });
+        const veiculos = await Veiculo.find({
+            ...filtro,
+            $or: [
+                { placa: { $regex: search, $options: "i" } },
+                { modelo: { $regex: search, $options: "i" } },
+                { nomeCliente: { $regex: search, $options: "i" } },
+            ],
+        })
+            .skip(offset)
+            .limit(limit);
 
-  } catch (err) {
-    res.status(500).send({ message: err.message });
-  }
+        const total = await Veiculo.countDocuments({
+            ...filtro,
+            $or: [
+                { placa: { $regex: search, $options: "i" } },
+                { modelo: { $regex: search, $options: "i" } },
+                { nomeCliente: { $regex: search, $options: "i" } },
+            ],
+        });
+
+        return res.status(200).json({
+            limit,
+            offset,
+            total,
+            totalPages: Math.ceil(total / limit),
+            currentPage: Math.floor(offset / limit) + 1,
+            results: veiculos,
+        });
+
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: err.message });
+    }
 };
 
 const topVeiculo = async (req, res) => {
@@ -182,10 +195,11 @@ const update = async (req, res) => {
 
         const veiculo = await findByIdService(id);
 
-        if (veiculo.usuario._id.toString() != req.userId) {
-            return res.status(400).send({
-                message: "Voce não pode atualizar esse veiculo"
-            })
+        if (
+            veiculo.usuario.toString() !== req.user.id &&
+            req.user.role !== "admin"
+        ) {
+            return res.status(403).json({ message: "Sem permissão" });
         }
 
         await updateService(id, placa, modelo, tipoLavagem, cor, nomeCliente, contato, status);
@@ -204,15 +218,18 @@ const erase = async (req, res) => {
 
         const veiculo = await findByIdService(id);
 
-        if (veiculo.usuario._id.toString() != req.userId) {
-            return res.status(400).send({
-                message: "Voce não pode deletar esse veiculo"
-            })
+        if (
+            veiculo.usuario.toString() !== req.user.id &&
+            req.user.role !== "admin"
+        ) {
+            return res.status(403).json({ message: "Sem permissão" });
         }
 
-        await eraseService(id);
-
-        return res.send({ message: "Veiculo deletado com sucesso" })
+        if (veiculo.status === "finalizado" && req.user.role !== "admin") {
+            return res.status(403).json({
+                message: "Apenas admin pode excluir veículo finalizado",
+            });
+        }
 
     } catch (err) {
         res.status(500).send({ message: err.message })

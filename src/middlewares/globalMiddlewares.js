@@ -36,6 +36,13 @@ export const validUser = async (req, res, next) => {
     }
 }
 
+export const adminMiddleware = (req, res, next) => {
+  if (req.user.role !== "admin") {
+    return res.status(403).json({ message: "Acesso restrito ao administrador" });
+  }
+  next();
+};
+
 export const validVeiculo = async (req, res, next) => {
     try {
         const id = req.params.id;

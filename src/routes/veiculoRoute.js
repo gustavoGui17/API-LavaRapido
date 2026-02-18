@@ -6,11 +6,11 @@ import { authMiddleware } from '../middlewares/authMiddlerware.js'
 const router = express.Router();
 
 router.post("/", authMiddleware, create);
-router.get("/", findAll);
+router.get("/", authMiddleware, findAll);
 router.get("/top", topVeiculo);
 router.get("/search", searchByPlaca);
 router.get("/:id", validId, validVeiculo, findById);
-router.get("byUser", authMiddleware, byUser);
+router.get("/byUser", authMiddleware, byUser);
 router.patch("/:id", authMiddleware, update);
 router.delete("/:id", authMiddleware, erase);
 

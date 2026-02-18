@@ -21,17 +21,19 @@ export const createService = async (veiculoData) => {
 };
 
 export const findAllService = (offset, limit, search) => {
-  const query = {
-  $or: [
-    { placa: { $regex: search, $options: "i" } },
-    { modelo: { $regex: search, $options: "i" } },
-    { nomeCliente: { $regex: search, $options: "i" } }
-  ]
-};
+  const query = search
+    ? {
+      $or: [
+        { placa: { $regex: search, $options: "i" } },
+        { modelo: { $regex: search, $options: "i" } },
+        { nomeCliente: { $regex: search, $options: "i" } }
+      ]
+    }
+    : {};
   return Veiculo.find(query)
     .skip(offset)
     .limit(limit)
-    .sort({ createdAt: -1 });
+    .sort({ entryDate: -1 });
 };
 
 export const countVeiculos = (search) => {
@@ -48,7 +50,7 @@ export const topVeiculoService = () => Veiculo.findOne()
 
 export const findByIdService = (id) => Veiculo.findById(id).populate("usuario");
 
-export const searchByPlacaService = (placa) => Veiculo.find({placa: { $regex: placa || "", $options: "i" },}).sort({ _id: -1 }).populate("usuario");
+export const searchByPlacaService = (placa) => Veiculo.find({ placa: { $regex: placa || "", $options: "i" }, }).sort({ _id: -1 }).populate("usuario");
 
 export const byUserService = (id) => Veiculo.find({ usuario: id }).sort({ _id: -1 }).populate("usuario");
 

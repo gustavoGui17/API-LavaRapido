@@ -35,7 +35,10 @@ export const authMiddleware = (req, res, next) => {
         return res.status(401).send({ message: "Usuário não encontrado" });
       }
 
-      req.userId = user._id.toString();
+      req.user = {
+        id: user._id.toString(),
+        role: user.role,
+      };
 
       return next();
     });
