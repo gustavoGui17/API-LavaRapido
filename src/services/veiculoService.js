@@ -54,12 +54,12 @@ export const searchByPlacaService = (placa) => Veiculo.find({ placa: { $regex: p
 
 export const byUserService = (id) => Veiculo.find({ usuario: id }).sort({ _id: -1 }).populate("usuario");
 
-export const updateService = (id, placa, modelo, cor, tipoLavagem, nomeCliente, contato, status) =>
-  Veiculo.findOneAndUpdate({ _id: id },
-    { placa, modelo, cor, tipoLavagem, nomeCliente, contato, status },
-    {
-      rawRessult: true,
-    }
+export const updateService = (id, dados) =>
+  Veiculo.findByIdAndUpdate(
+    id,
+    { $set: dados },
+    { new: true }
   );
 
-export const eraseService = (id) => Veiculo.findByIdAndDelete({ _id: id });
+export const eraseService = (id) =>
+  Veiculo.findByIdAndDelete(id);

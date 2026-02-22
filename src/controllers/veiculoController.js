@@ -5,6 +5,7 @@ import {
     searchByPlacaService,
     updateService,
     byUserService,
+    eraseService
 } from "../services/veiculoService.js";
 
 import Veiculo from "../models/Veiculo.js";
@@ -24,7 +25,7 @@ const create = async (req, res) => {
             tipoLavagem,
             nomeCliente,
             contato,
-            usuario: req.userId,
+            usuario: req.user.id,
         });
 
         if (!veiculo) {
@@ -188,6 +189,7 @@ const update = async (req, res) => {
     try {
         const { placa, modelo, cor, tipoLavagem, nomeCliente, contato, status } = req.body;
         const { id } = req.params;
+        const dados = req.body;
 
         if (!placa && !modelo && !cor && !tipoLavagem && !nomeCliente && !contato && !status) {
             return res.status(400).send({ message: "Selecione o campo para atualizar" });
@@ -202,25 +204,30 @@ const update = async (req, res) => {
             return res.status(403).json({ message: "Sem permissão" });
         }
 
-        await updateService(id, placa, modelo, tipoLavagem, cor, nomeCliente, contato, status);
+        await updateService(id, dados);
 
         return res.send({ message: "Atualização com sucesso" })
 
     } catch (err) {
+        console.error("ERRO UPDATE:", err);
         res.status(500).send({ message: err.message })
     }
 }
 
 const erase = async (req, res) => {
     try {
-
         const { id } = req.params;
 
         const veiculo = await findByIdService(id);
 
+        if (!veiculo) {
+            return res.status(404).json({ message: "Veículo não encontrado" });
+        }
+
         if (
-            veiculo.usuario.toString() !== req.user.id &&
-            req.user.role !== "admin"
+            !veiculo.usuario ||
+            (veiculo.usuario.toString() !== req.user.id &&
+                req.user.role !== "admin")
         ) {
             return res.status(403).json({ message: "Sem permissão" });
         }
@@ -231,9 +238,16 @@ const erase = async (req, res) => {
             });
         }
 
+        await eraseService(id);
+
+        return res.status(200).json({
+            message: "Veículo excluído com sucesso",
+        });
+
     } catch (err) {
-        res.status(500).send({ message: err.message })
+        console.error("ERRO DELETE:", err);
+        return res.status(500).json({ message: err.message });
     }
-}
+};
 
 export { create, findAll, topVeiculo, findById, searchByPlaca, byUser, update, erase }
