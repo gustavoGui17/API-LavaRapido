@@ -1,4 +1,7 @@
 import mongoose from "mongoose"
+import dns from "node:dns/promises";
+
+dns.setServers(["1.1.1.1", "8.8.8.8"]);
 
 const connetcDataBase = () => {
     console.log("Connectando ao banco de dados")
