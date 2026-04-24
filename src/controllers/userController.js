@@ -6,7 +6,7 @@ const create = async (req, res) => {
         const { name, email, password } = req.body;
 
         if (!name || !email || !password) {
-            res.status(400).send({ message: "Por favor prencher todos os campos" })
+            return res.status(400).send({ message: "Por favor preencher todos os campos" });
         }
 
         if (password.length < 6) {
@@ -19,17 +19,12 @@ const create = async (req, res) => {
             return res.status(400).send({ message: "Erro na criacao do usuario" });
         }
 
-        if (!password) {
-            return res.status(400).send({ message: "Erro na criacao do usuario" });
-        }
-
         res.status(201).send({
             message: "Usuario criado com suceso",
             user: {
                 id: user._id,
                 name,
                 email,
-                password,
             },
         });
     } catch (err) {
@@ -85,4 +80,16 @@ const update = async (req, res) => {
 
 };
 
-export default  { create, findAll, findById, update };
+const remove = async (req, res) => {
+    try {
+        const { id } = req;
+
+        await userService.removeService(id);
+
+        res.send({ message: "Usuario deletado com sucesso" });
+    } catch (err) {
+        res.status(500).send({ message: err.message });
+    }
+};
+
+export default { create, findAll, findById, update, remove };
