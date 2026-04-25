@@ -111,33 +111,33 @@
           "email",
           "password"
         ]
-      }
-    },
-    "Customer": {
-      "type": "object",
-      "properties": {
-        "nome": {
-          "type": "string"
-        },
-        "cnpj": {
-          "type": "string"
-        },
-        "contato": {
-          "type": "string"
-        },
-        "status": {
-          "type": "string",
-          "enum": [
-            "ativo",
-            "inativo"
-          ]
-        }
       },
-      "required": [
-        "nome",
-        "cnpj",
-        "contato"
-      ]
+      "Customer": {
+        "type": "object",
+        "properties": {
+          "nome": {
+            "type": "string"
+          },
+          "cnpj": {
+            "type": "string"
+          },
+          "contato": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ativo",
+              "inativo"
+            ]
+          }
+        },
+        "required": [
+          "nome",
+          "cnpj",
+          "contato"
+        ]
+      }
     }
   },
   "paths": {
@@ -459,157 +459,157 @@
           }
         }
       }
-    }
-  },
-  "/customer": {
-    "post": {
-      "tags": [
-        "Customer"
-      ],
-      "summary": "Criar cliente",
-      "security": [
-        {
-          "bearerAuth": []
-        }
-      ],
-      "requestBody": {
-        "required": true,
-        "content": {
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/Customer"
+    },
+    "/customer": {
+      "post": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "Criar cliente",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Customer"
+              }
             }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Cliente criado com sucesso"
+          },
+          "400": {
+            "description": "Erro ao criar cliente"
           }
         }
       },
-      "responses": {
-        "201": {
-          "description": "Cliente criado com sucesso"
-        },
-        "400": {
-          "description": "Erro ao criar cliente"
-        }
-      }
-    },
-    "get": {
-      "tags": [
-        "Customer"
-      ],
-      "summary": "Listar clientes com paginação e busca",
-      "parameters": [
-        {
-          "name": "limit",
-          "in": "query",
-          "schema": {
-            "type": "integer"
-          }
-        },
-        {
-          "name": "offset",
-          "in": "query",
-          "schema": {
-            "type": "integer"
-          }
-        },
-        {
-          "name": "search",
-          "in": "query",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "responses": {
-        "200": {
-          "description": "Lista de clientes"
-        }
-      }
-    }
-  },
-  "/customers/{id}": {
-    "get": {
-      "tags": [
-        "Customer"
-      ],
-      "summary": "Buscar cliente por ID",
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "responses": {
-        "200": {
-          "description": "Cliente encontrado"
-        },
-        "404": {
-          "description": "Cliente não encontrado"
-        }
-      }
-    },
-    "patch": {
-      "tags": [
-        "Customer"
-      ],
-      "summary": "Atualizar cliente",
-      "security": [
-        {
-          "bearerAuth": []
-        }
-      ],
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "requestBody": {
-        "required": false,
-        "content": {
-          "application/json": {
+      "get": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "Listar clientes com paginação e busca",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
             "schema": {
-              "$ref": "#/components/schemas/Customer"
+              "type": "integer"
             }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de clientes"
+          }
+        }
+      }
+    },
+    "/customers/{id}": {
+      "get": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "Buscar cliente por ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cliente encontrado"
+          },
+          "404": {
+            "description": "Cliente não encontrado"
           }
         }
       },
-      "responses": {
-        "200": {
-          "description": "Cliente atualizado com sucesso"
-        }
-      }
-    },
-    "delete": {
-      "tags": [
-        "Customer"
-      ],
-      "summary": "Deletar cliente",
-      "security": [
-        {
-          "bearerAuth": []
-        }
-      ],
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "schema": {
-            "type": "string"
+      "patch": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "Atualizar cliente",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Customer"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Cliente atualizado com sucesso"
           }
         }
-      ],
-      "responses": {
-        "200": {
-          "description": "Cliente deletado com sucesso"
+      },
+      "delete": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "Deletar cliente",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cliente deletado com sucesso"
+          }
         }
       }
     }
