@@ -461,10 +461,10 @@
       }
     }
   },
-  "/customers": {
+  "/customer": {
     "post": {
       "tags": [
-        "Customers"
+        "Customer"
       ],
       "summary": "Criar cliente",
       "security": [
@@ -493,7 +493,7 @@
     },
     "get": {
       "tags": [
-        "Customers"
+        "Customer"
       ],
       "summary": "Listar clientes com paginação e busca",
       "parameters": [
@@ -529,7 +529,7 @@
   "/customers/{id}": {
     "get": {
       "tags": [
-        "Customers"
+        "Customer"
       ],
       "summary": "Buscar cliente por ID",
       "parameters": [
@@ -553,7 +553,7 @@
     },
     "patch": {
       "tags": [
-        "Customers"
+        "Customer"
       ],
       "summary": "Atualizar cliente",
       "security": [
@@ -589,7 +589,7 @@
     },
     "delete": {
       "tags": [
-        "Customers"
+        "Customer"
       ],
       "summary": "Deletar cliente",
       "security": [
