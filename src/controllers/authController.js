@@ -28,14 +28,14 @@ export const login = async (req, res) => {
       token,
       user: {
         id: user._id,
-        nome: user.nome,
+        name: user.name,
         email: user.email,
         role: user.role
       },
     });
 
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Erro interno no servidor" });
+    console.error("ERRO LOGIN:", err);
+    res.status(500).json({ message: err.message });
   }
 };

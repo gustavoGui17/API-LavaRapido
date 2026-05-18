@@ -1,7 +1,6 @@
 import userService from "../services/userService.js"
 
 const create = async (req, res) => {
-
     try {
         const { name, email, password } = req.body;
 
@@ -13,22 +12,20 @@ const create = async (req, res) => {
             return res.status(400).send({ message: "A senha precisa ter no mínimo 6 caracteres" });
         }
 
-        const user = await userService.createService(req.body)
+        const user = await userService.createService(req.body);
 
-        if (!user) {
-            return res.status(400).send({ message: "Erro na criacao do usuario" });
-        }
-
-        res.status(201).send({
-            message: "Usuario criado com suceso",
+        return res.status(201).send({
+            message: "Usuario criado com sucesso",
             user: {
                 id: user._id,
-                name,
-                email,
+                name: user.name,
+                email: user.email,
             },
         });
+
     } catch (err) {
-        res.status(500).send({ message: err.message })
+        console.error(err);
+        return res.status(500).send({ message: err.message });
     }
 };
 
@@ -62,6 +59,7 @@ const update = async (req, res) => {
 
         if (!name && !email && !password) {
             res.status(400).send({ message: "Por favor prencher um campo para editar" });
+            return res.status(400)
         }
 
         const { id, user } = req;

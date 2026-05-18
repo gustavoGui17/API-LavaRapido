@@ -5,7 +5,7 @@ import { authMiddleware } from '../middlewares/authMiddlerware.js'
 
 const router = express.Router();
 
-router.post("/", authMiddleware, create);
+router.post("/register", authMiddleware, create);
 router.get("/", authMiddleware, findAll);
 router.get("/top", topVeiculo);
 router.get("/search", searchByPlaca);

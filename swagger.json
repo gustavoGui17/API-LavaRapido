@@ -141,7 +141,7 @@
     }
   },
   "paths": {
-    "/auth": {
+    "/auth/login": {
       "post": {
         "tags": [
           "Autenticação"
@@ -167,7 +167,7 @@
         }
       }
     },
-    "/user": {
+    "/user/register": {
       "post": {
         "tags": [
           "Usuário"
@@ -263,7 +263,7 @@
         }
       }
     },
-    "/veiculo": {
+    "/veiculo/register": {
       "post": {
         "tags": [
           "Veículo"
@@ -460,7 +460,7 @@
         }
       }
     },
-    "/customer": {
+    "/customer/register": {
       "post": {
         "tags": [
           "Customers"

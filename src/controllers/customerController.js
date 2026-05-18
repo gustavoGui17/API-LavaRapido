@@ -48,7 +48,7 @@ const findAll = async (req, res) => {
 
 const findById = async (req, res) => {
     try {
-        const { id } = req;
+        const { id } = req.params;
 
         const customer = await customerService.findByIdService(id);
 
@@ -67,7 +67,7 @@ const findById = async (req, res) => {
 
 const update = async (req, res) => {
     try {
-        const { id } = req;
+        const { id } = req.params;
 
         const updated = await customerService.updateService(id, req.body);
 
@@ -83,7 +83,7 @@ const update = async (req, res) => {
 
 const remove = async (req, res) => {
     try {
-        const { id } = req;
+        const { id } = req.params;
 
         await customerService.removeService(id);
 
