@@ -118,8 +118,15 @@
           "nome": {
             "type": "string"
           },
-          "cnpj": {
+          "documento": {
             "type": "string"
+          },
+          "documentoTipo": {
+            "type": "string",
+            "enum": [
+              "cpf",
+              "cnpj"
+            ]
           },
           "contato": {
             "type": "string"
@@ -134,7 +141,8 @@
         },
         "required": [
           "nome",
-          "cnpj",
+          "documento",
+          "documentoTipo",
           "contato"
         ]
       }

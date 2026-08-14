@@ -2,9 +2,9 @@ import customerService from "../services/customerService.js";
 
 const create = async (req, res) => {
     try {
-        const { nome, cnpj, contato } = req.body;
+        const { name, email, password, nomeFantasia, documento, documentoTipo, contato } = req.body;
 
-        if (!nome || !cnpj || !contato) {
+        if (!name || !email || !password || !nomeFantasia || !documento || !documentoTipo || !contato) {
             return res.status(400).send({
                 message: "Preencha todos os campos"
             });
