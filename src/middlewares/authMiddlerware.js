@@ -7,21 +7,30 @@ dotenv.config();
 export const authMiddleware = (req, res, next) => {
   try {
     const { authorization } = req.headers;
+    const cookieToken = req.cookies?.token;
 
-    if (!authorization) {
+    let token;
+
+    if (cookieToken) {
+      token = cookieToken;
+    } else if (authorization) {
+      const parts = authorization.split(" ");
+
+      if (parts.length !== 2) {
+        return res.status(401).send({ message: "Token mal formatado" });
+      }
+
+      const [schema, bearerToken] = parts;
+
+      if (schema !== "Bearer") {
+        return res.status(401).send({ message: "Token com esquema inválido" });
+      }
+
+      token = bearerToken;
+    }
+
+    if (!token) {
       return res.status(401).send({ message: "Token não fornecido" });
-    }
-
-    const parts = authorization.split(" ");
-
-    if (parts.length !== 2) {
-      return res.status(401).send({ message: "Token mal formatado" });
-    }
-
-    const [schema, token] = parts;
-
-    if (schema !== "Bearer") {
-      return res.status(401).send({ message: "Token com esquema inválido" });
     }
 
     jwt.verify(token, process.env.SECRET_JWT, async (error, decoded) => {
@@ -37,6 +46,8 @@ export const authMiddleware = (req, res, next) => {
 
       req.user = {
         id: user._id.toString(),
+        name: user.name,
+        email: user.email,
         role: user.role,
       };
 

@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import connetcDataBase from "./src/database/db.js";
 
 import veiculoRoute from "./src/routes/veiculoRoute.js";
@@ -14,7 +15,13 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(cors());
+const corsOptions = {
+  origin: process.env.FRONTEND_URL || "http://localhost:5173",
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
+app.use(cookieParser());
 
 connetcDataBase()
 app.use(express.json());

@@ -43,6 +43,18 @@ export const adminMiddleware = (req, res, next) => {
   next();
 };
 
+export const ownershipMiddleware = (req, res, next) => {
+  if (req.user.role === "admin") {
+    return next();
+  }
+
+  if (req.user.id !== req.params.id) {
+    return res.status(403).json({ message: "Acesso negado: você só pode alterar seus próprios dados" });
+  }
+
+  next();
+};
+
 export const validVeiculo = async (req, res, next) => {
     try {
         const id = req.params.id;
