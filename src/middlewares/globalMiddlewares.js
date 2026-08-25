@@ -8,7 +8,7 @@ export const validId = (req, res, next) => {
         const id = req.params.id;
 
         if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(400).send({ message: "ID invalido" });
+            return res.status(400).send({ message: "ID inválido" });
         }
 
         next()
@@ -62,7 +62,7 @@ export const validVeiculo = async (req, res, next) => {
        const veiculo = await findVeiculoByIdService(id);
 
         if (!veiculo) {
-            return res.status(400).send({ message: "Veiculo não encontrado" });
+            return res.status(400).send({ message: "Veículo não encontrado" });
         }
 
         req.id = id;

@@ -1,5 +1,6 @@
 import bcrypt from "bcryptjs";
 import { loginService, generateToken } from "../services/authService.js";
+import Customer from "../models/Customer.js";
 
 const cookieOptions = {
   httpOnly: true,
@@ -8,11 +9,12 @@ const cookieOptions = {
   maxAge: 24 * 60 * 60 * 1000,
 };
 
-const publicUser = (user) => ({
+const publicUser = (user, customerStatus) => ({
   id: user._id,
   name: user.name,
   email: user.email,
   role: user.role,
+  customerStatus: customerStatus || "ativo",
 });
 
 export const login = async (req, res) => {
@@ -35,13 +37,25 @@ export const login = async (req, res) => {
       return res.status(401).json({ message: "Senha inválida" });
     }
 
+    let customerStatus = "ativo";
+    if (user.role === "cliente") {
+      const customer = await Customer.findOne({ user: user._id });
+      if (customer) {
+        customerStatus = customer.status;
+      }
+    }
+
+    if (customerStatus === "inativo") {
+      return res.status(403).json({ message: "Sua conta está inativa. Entre em contato com o administrador." });
+    }
+
     const token = generateToken(user._id);
 
     res.cookie("token", token, cookieOptions);
 
     res.status(200).json({
       message: "Login realizado com sucesso",
-      user: publicUser(user),
+      user: publicUser(user, customerStatus),
     });
 
   } catch (err) {
@@ -52,7 +66,14 @@ export const login = async (req, res) => {
 
 export const me = async (req, res) => {
   try {
-    return res.status(200).json({ user: publicUser(req.user) });
+    let customerStatus = "ativo";
+    if (req.user.role === "cliente") {
+      const customer = await Customer.findOne({ user: req.user.id });
+      if (customer) {
+        customerStatus = customer.status;
+      }
+    }
+    return res.status(200).json({ user: publicUser(req.user, customerStatus) });
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }

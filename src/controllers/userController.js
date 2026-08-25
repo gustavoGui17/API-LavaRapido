@@ -5,7 +5,7 @@ const create = async (req, res) => {
         const { name, email, password } = req.body;
 
         if (!name || !email || !password) {
-            return res.status(400).send({ message: "Por favor preencher todos os campos" });
+            return res.status(400).send({ message: "Preencha todos os campos obrigatórios" });
         }
 
         if (password.length < 6) {
@@ -15,7 +15,7 @@ const create = async (req, res) => {
         const user = await userService.createService(req.body);
 
         return res.status(201).send({
-            message: "Usuario criado com sucesso",
+            message: "Usuário criado com sucesso",
             user: {
                 id: user._id,
                 name: user.name,
@@ -34,7 +34,7 @@ const findAll = async (req, res) => {
         const users = await userService.findAllService();
 
         if (users.length === 0) {
-            return res.status(400).send({ message: "NãO tem usuarios cadastrados" });
+            return res.status(400).send({ message: "Nenhum usuário cadastrado" });
         }
 
         res.send(users)
@@ -58,7 +58,7 @@ const update = async (req, res) => {
         const { name, email, password } = req.body;
 
         if (!name && !email && !password) {
-            res.status(400).send({ message: "Por favor prencher um campo para editar" });
+            res.status(400).send({ message: "Preencha pelo menos um campo para editar" });
             return res.status(400)
         }
 
@@ -71,7 +71,7 @@ const update = async (req, res) => {
             password
         )
 
-        res.send({ message: "Usuario alterado com sucesso" })
+        res.send({ message: "Usuário atualizado com sucesso" })
     } catch (err) {
         res.status(500).send({ message: err.message })
     }
@@ -84,7 +84,7 @@ const remove = async (req, res) => {
 
         await userService.removeService(id);
 
-        res.send({ message: "Usuario deletado com sucesso" });
+        res.send({ message: "Usuário removido com sucesso" });
     } catch (err) {
         res.status(500).send({ message: err.message });
     }

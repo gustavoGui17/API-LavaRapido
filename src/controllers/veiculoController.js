@@ -8,6 +8,8 @@ import {
     eraseService
 } from "../services/veiculoService.js";
 
+import { notifyStatusChange } from "../services/whatsappService.js";
+
 import Veiculo from "../models/Veiculo.js";
 
 const create = async (req, res) => {
@@ -29,7 +31,7 @@ const create = async (req, res) => {
         });
 
         if (!veiculo) {
-            return res.status(400).send({ message: "Erro na criação do veículo" });
+            return res.status(400).send({ message: "Erro ao criar veículo" });
         }
 
         res.status(201).send({
@@ -93,7 +95,7 @@ const topVeiculo = async (req, res) => {
         const veiculo = await topVeiculoService()
 
         if (!veiculo) {
-            return res.status(400).send({ message: "Não tem Veiculos cadastrados" });
+            return res.status(400).send({ message: "Nenhum veículo cadastrado" });
         }
 
         res.send({
@@ -143,7 +145,7 @@ const searchByPlaca = async (req, res) => {
         const veiculo = await searchByPlacaService(placa);
 
         if (veiculo.length === 0) {
-            return res.status(400).send({ message: "Nao existe essa placa no sistema" })
+            return res.status(400).send({ message: "Nenhum veículo encontrado com essa placa" })
         }
 
         return res.send({
@@ -198,18 +200,26 @@ const update = async (req, res) => {
         const veiculo = await findByIdService(id);
 
         if (
-            veiculo.usuario.toString() !== req.user.id &&
+            veiculo.usuario._id.toString() !== req.user.id &&
             req.user.role !== "admin"
         ) {
-            return res.status(403).json({ message: "Sem permissão" });
+            return res.status(403).json({ message: "Você não tem permissão para alterar este veículo" });
         }
+
+        const statusAnterior = veiculo.status;
 
         await updateService(id, dados);
 
-        return res.send({ message: "Atualização com sucesso" })
+        if (status && status !== statusAnterior) {
+            notifyStatusChange(veiculo, status).catch((err) => {
+                console.error("[WhatsApp] Falha ao enviar notificação:", err.message);
+            });
+        }
+
+        return res.send({ message: "Veículo atualizado com sucesso" })
 
     } catch (err) {
-        console.error("ERRO UPDATE:", err);
+        console.error("ERRO UPDATE:", err.message);
         res.status(500).send({ message: err.message })
     }
 }
@@ -226,10 +236,10 @@ const erase = async (req, res) => {
 
         if (
             !veiculo.usuario ||
-            (veiculo.usuario.toString() !== req.user.id &&
+            (veiculo.usuario._id.toString() !== req.user.id &&
                 req.user.role !== "admin")
         ) {
-            return res.status(403).json({ message: "Sem permissão" });
+            return res.status(403).json({ message: "Você não tem permissão para excluir este veículo" });
         }
 
         if (veiculo.status === "finalizado" && req.user.role !== "admin") {
