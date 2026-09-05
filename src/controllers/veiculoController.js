@@ -63,6 +63,7 @@ const findAll = async (req, res) => {
                 { nomeCliente: { $regex: search, $options: "i" } },
             ],
         })
+            .sort({ entryDate: -1 })
             .skip(offset)
             .limit(limit);
 
@@ -207,6 +208,18 @@ const update = async (req, res) => {
         }
 
         const statusAnterior = veiculo.status;
+
+        const statusAtual = dados.status;
+
+        if (statusAtual === "finalizado" && statusAnterior !== "finalizado") {
+            dados.finishedAt = new Date();
+        } else if (
+            statusAtual &&
+            statusAtual !== "finalizado" &&
+            statusAnterior === "finalizado"
+        ) {
+            dados.finishedAt = null;
+        }
 
         await updateService(id, dados);
 

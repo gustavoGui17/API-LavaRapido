@@ -15,8 +15,25 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3000;
 
+const isLocalDev = process.env.NODE_ENV !== "production";
+
 const corsOptions = {
-  origin: process.env.FRONTEND_URL || "http://localhost:5173",
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+
+    const allowedFromEnv = (process.env.FRONTEND_URL || "")
+      .split(",")
+      .map((o) => o.trim())
+      .filter(Boolean);
+
+    if (allowedFromEnv.includes(origin)) return callback(null, true);
+
+    if (isLocalDev && /^http:\/\/localhost(:\d{1,5})?$/.test(origin)) {
+      return callback(null, true);
+    }
+
+    return callback(new Error("Not allowed by CORS"));
+  },
   credentials: true,
 };
 

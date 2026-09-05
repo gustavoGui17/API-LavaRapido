@@ -30,6 +30,10 @@ const veiculoSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
+    finishedAt: {
+        type: Date,
+        default: null
+    },
     status: {
         type: String,
         enum: ["pendente", "em atendimento", "finalizado"],
