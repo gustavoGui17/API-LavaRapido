@@ -104,7 +104,3 @@ API-LavaRapido/
 
 ### Veículo (`Veiculo`)
 `placa`, `modelo`, `cor`, `tipoLavagem` (`simples` | `completa` | `premium`), `nomeCliente`, `contato`, `status` (`pendente` | `em atendimento` | `finalizado`), `usuario`, `customer`
-
-## Licença
-
-Este projeto está sob a licença **ISC**.
