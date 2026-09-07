@@ -1,15 +1,15 @@
 <<<<<<< HEAD
-# 💨 API Lava Rápido
+# API Lava Rápido
 
 Backend (REST API) do sistema de gerenciamento de um lava rápido. Fornece autenticação, cadastro de usuários, clientes e controle de veículos (lavagens), com documentação interativa via Swagger.
 
 ## Tecnologias
 =======
-#💨 API Lava Rápido
+# API Lava Rápido
 
 Backend (REST API) do sistema de gerenciamento de um lava rápido. Fornece autenticação, cadastro de usuários, clientes e controle de veículos (lavagens), com documentação interativa via Swagger.
 
-## 🛠️ Tecnologias
+## Tecnologias
 >>>>>>> 83d55d601e3711981f532fe74c103375e93b06e6
 
 - **Node.js + Express** — servidor e rotas
@@ -22,7 +22,7 @@ Backend (REST API) do sistema de gerenciamento de um lava rápido. Fornece auten
 <<<<<<< HEAD
 ## Instalação
 =======
-## 📦 Instalação
+## Instalação
 >>>>>>> 83d55d601e3711981f532fe74c103375e93b06e6
 
 ```bash
@@ -47,9 +47,9 @@ FRONTEND_URL=http://localhost:5173
 > `FRONTEND_URL` aceita múltiplas origens separadas por vírgula. Em ambiente de desenvolvimento, qualquer origem `localhost` é liberada automaticamente.
 
 <<<<<<< HEAD
-## ▶ Como rodar
+## Como rodar
 =======
-## ▶️ Como rodar
+## Como rodar
 >>>>>>> 83d55d601e3711981f532fe74c103375e93b06e6
 
 ```bash
@@ -62,7 +62,7 @@ Por padrão, o servidor roda na porta `3000`.
 <<<<<<< HEAD
 ## Documentação da API
 =======
-## 📚 Documentação da API
+## Documentação da API
 >>>>>>> 83d55d601e3711981f532fe74c103375e93b06e6
 
 Com o servidor rodando, acesse a documentação interativa (Swagger):
@@ -102,7 +102,7 @@ http://localhost:3000/doc
 <<<<<<< HEAD
 ## Estrutura do projeto
 =======
-## 🧱 Estrutura do projeto
+## Estrutura do projeto
 >>>>>>> 83d55d601e3711981f532fe74c103375e93b06e6
 
 ```
@@ -121,7 +121,7 @@ API-LavaRapido/
 <<<<<<< HEAD
 ## Modelos de dados
 =======
-## 📋 Modelos de dados
+## Modelos de dados
 >>>>>>> 83d55d601e3711981f532fe74c103375e93b06e6
 
 ### Usuário (`User`)
@@ -138,7 +138,7 @@ API-LavaRapido/
 
 Este projeto está sob a licença **ISC**.
 =======
-## 📄 Licença
+## Licença
 
 Este projeto está sob a licença **ISC**.
 >>>>>>> 83d55d601e3711981f532fe74c103375e93b06e6
