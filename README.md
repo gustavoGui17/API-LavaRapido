@@ -1,10 +1,10 @@
 <<<<<<< HEAD
 # API Lava Rápido
+=======
 
 Backend (REST API) do sistema de gerenciamento de um lava rápido. Fornece autenticação, cadastro de usuários, clientes e controle de veículos (lavagens), com documentação interativa via Swagger.
 
 ## Tecnologias
->>>>>>> 83d55d601e3711981f532fe74c103375e93b06e6
 
 - **Node.js + Express** — servidor e rotas
 - **MongoDB + Mongoose** — banco de dados
@@ -40,6 +40,7 @@ FRONTEND_URL=http://localhost:5173
 
 <<<<<<< HEAD
 ## Como rodar
+=======
 
 ```bash
 npm run dev    # desenvolvimento (nodemon)
@@ -50,6 +51,7 @@ Por padrão, o servidor roda na porta `3000`.
 
 <<<<<<< HEAD
 ## Documentação da API
+=======
 
 Com o servidor rodando, acesse a documentação interativa (Swagger):
 
@@ -87,6 +89,7 @@ http://localhost:3000/doc
 
 <<<<<<< HEAD
 ## Estrutura do projeto
+=======
 
 ```
 API-LavaRapido/
@@ -103,6 +106,7 @@ API-LavaRapido/
 
 <<<<<<< HEAD
 ## Modelos de dados
+=======
 
 ### Usuário (`User`)
 `name`, `email` (único), `password` (hasheada), `role` (`admin` | `cliente`), `veiculos[]`
