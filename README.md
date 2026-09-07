@@ -4,12 +4,6 @@
 Backend (REST API) do sistema de gerenciamento de um lava rápido. Fornece autenticação, cadastro de usuários, clientes e controle de veículos (lavagens), com documentação interativa via Swagger.
 
 ## Tecnologias
-=======
-# API Lava Rápido
-
-Backend (REST API) do sistema de gerenciamento de um lava rápido. Fornece autenticação, cadastro de usuários, clientes e controle de veículos (lavagens), com documentação interativa via Swagger.
-
-## Tecnologias
 >>>>>>> 83d55d601e3711981f532fe74c103375e93b06e6
 
 - **Node.js + Express** — servidor e rotas
@@ -22,8 +16,6 @@ Backend (REST API) do sistema de gerenciamento de um lava rápido. Fornece auten
 <<<<<<< HEAD
 ## Instalação
 =======
-## Instalação
->>>>>>> 83d55d601e3711981f532fe74c103375e93b06e6
 
 ```bash
 # clone o repositório
@@ -48,9 +40,6 @@ FRONTEND_URL=http://localhost:5173
 
 <<<<<<< HEAD
 ## Como rodar
-=======
-## Como rodar
->>>>>>> 83d55d601e3711981f532fe74c103375e93b06e6
 
 ```bash
 npm run dev    # desenvolvimento (nodemon)
@@ -61,9 +50,6 @@ Por padrão, o servidor roda na porta `3000`.
 
 <<<<<<< HEAD
 ## Documentação da API
-=======
-## Documentação da API
->>>>>>> 83d55d601e3711981f532fe74c103375e93b06e6
 
 Com o servidor rodando, acesse a documentação interativa (Swagger):
 
@@ -101,9 +87,6 @@ http://localhost:3000/doc
 
 <<<<<<< HEAD
 ## Estrutura do projeto
-=======
-## Estrutura do projeto
->>>>>>> 83d55d601e3711981f532fe74c103375e93b06e6
 
 ```
 API-LavaRapido/
@@ -120,9 +103,6 @@ API-LavaRapido/
 
 <<<<<<< HEAD
 ## Modelos de dados
-=======
-## Modelos de dados
->>>>>>> 83d55d601e3711981f532fe74c103375e93b06e6
 
 ### Usuário (`User`)
 `name`, `email` (único), `password` (hasheada), `role` (`admin` | `cliente`), `veiculos[]`
@@ -137,8 +117,3 @@ API-LavaRapido/
 ## Licença
 
 Este projeto está sob a licença **ISC**.
-=======
-## Licença
-
-Este projeto está sob a licença **ISC**.
->>>>>>> 83d55d601e3711981f532fe74c103375e93b06e6
