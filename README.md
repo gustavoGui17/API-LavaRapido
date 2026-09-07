@@ -1,6 +1,4 @@
-<<<<<<< HEAD
 # API Lava Rápido
-=======
 
 Backend (REST API) do sistema de gerenciamento de um lava rápido. Fornece autenticação, cadastro de usuários, clientes e controle de veículos (lavagens), com documentação interativa via Swagger.
 
@@ -13,9 +11,7 @@ Backend (REST API) do sistema de gerenciamento de um lava rápido. Fornece auten
 - **CORS** — liberação de origens configurável
 - **swagger-ui-express** — documentação interativa da API
 
-<<<<<<< HEAD
 ## Instalação
-=======
 
 ```bash
 # clone o repositório
@@ -38,9 +34,7 @@ FRONTEND_URL=http://localhost:5173
 
 > `FRONTEND_URL` aceita múltiplas origens separadas por vírgula. Em ambiente de desenvolvimento, qualquer origem `localhost` é liberada automaticamente.
 
-<<<<<<< HEAD
 ## Como rodar
-=======
 
 ```bash
 npm run dev    # desenvolvimento (nodemon)
@@ -49,9 +43,7 @@ npm start      # produção
 
 Por padrão, o servidor roda na porta `3000`.
 
-<<<<<<< HEAD
 ## Documentação da API
-=======
 
 Com o servidor rodando, acesse a documentação interativa (Swagger):
 
@@ -87,9 +79,7 @@ http://localhost:3000/doc
 
 > **Admin** = usuário com `role: "admin"`.
 
-<<<<<<< HEAD
 ## Estrutura do projeto
-=======
 
 ```
 API-LavaRapido/
@@ -104,9 +94,7 @@ API-LavaRapido/
 │   └── services/             # regras de negócio auxiliares
 ```
 
-<<<<<<< HEAD
 ## Modelos de dados
-=======
 
 ### Usuário (`User`)
 `name`, `email` (único), `password` (hasheada), `role` (`admin` | `cliente`), `veiculos[]`
@@ -117,7 +105,6 @@ API-LavaRapido/
 ### Veículo (`Veiculo`)
 `placa`, `modelo`, `cor`, `tipoLavagem` (`simples` | `completa` | `premium`), `nomeCliente`, `contato`, `status` (`pendente` | `em atendimento` | `finalizado`), `usuario`, `customer`
 
-<<<<<<< HEAD
 ## Licença
 
 Este projeto está sob a licença **ISC**.
