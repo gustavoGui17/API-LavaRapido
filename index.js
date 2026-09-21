@@ -5,9 +5,11 @@ import cookieParser from "cookie-parser";
 import connetcDataBase from "./src/database/db.js";
 
 import veiculoRoute from "./src/routes/veiculoRoute.js";
+import veiculoClienteRoute from "./src/routes/veiculoClienteRoute.js";
 import userRoute from "./src/routes/userRoute.js";
 import customerRoute from "./src/routes/customerRoute.js"
 import authRoute from "./src/routes/authRoute.js";
+import agendamentoRoute from "./src/routes/agendamentoRoute.js";
 import swaggerRoute from "./src/routes/swaggerRoute.cjs";
 
 dotenv.config();
@@ -47,6 +49,8 @@ app.use("/user", userRoute);
 app.use("/customers",customerRoute);
 app.use("/auth", authRoute);
 app.use("/veiculo", veiculoRoute);
+app.use("/veiculo-cliente", veiculoClienteRoute);
+app.use("/agendamentos", agendamentoRoute);
 app.use("/doc", swaggerRoute);
 
 

@@ -43,8 +43,18 @@
             "type": "string",
             "enum": [
               "admin",
-              "cliente"
+              "cliente",
+              "consumidor"
             ]
+          },
+          "telefone": {
+            "type": "string"
+          },
+          "endereco": {
+            "$ref": "#/components/schemas/Endereco"
+          },
+          "location": {
+            "$ref": "#/components/schemas/GeoPoint"
           }
         },
         "required": [
@@ -118,6 +128,9 @@
           "nome": {
             "type": "string"
           },
+          "nomeFantasia": {
+            "type": "string"
+          },
           "documento": {
             "type": "string"
           },
@@ -137,6 +150,19 @@
               "ativo",
               "inativo"
             ]
+          },
+          "endereco": {
+            "$ref": "#/components/schemas/Endereco"
+          },
+          "location": {
+            "$ref": "#/components/schemas/GeoPoint"
+          },
+          "diasFuncionamento": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "description": "Dias da semana (0 = domingo, 6 = sábado)"
           }
         },
         "required": [
@@ -144,6 +170,94 @@
           "documento",
           "documentoTipo",
           "contato"
+        ]
+      },
+      "Endereco": {
+        "type": "object",
+        "properties": {
+          "cep": {
+            "type": "string"
+          },
+          "logradouro": {
+            "type": "string"
+          },
+          "numero": {
+            "type": "string"
+          },
+          "bairro": {
+            "type": "string"
+          },
+          "cidade": {
+            "type": "string"
+          },
+          "estado": {
+            "type": "string"
+          }
+        }
+      },
+      "GeoPoint": {
+        "type": "object",
+        "description": "Localização GeoJSON. coordinates = [longitude, latitude]",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "Point"
+            ]
+          },
+          "coordinates": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 2,
+            "maxItems": 2
+          }
+        }
+      },
+      "VeiculoCliente": {
+        "type": "object",
+        "properties": {
+          "placa": {
+            "type": "string"
+          },
+          "modelo": {
+            "type": "string"
+          },
+          "cor": {
+            "type": "string"
+          },
+          "ano": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "placa",
+          "modelo",
+          "cor"
+        ]
+      },
+      "Agendamento": {
+        "type": "object",
+        "properties": {
+          "lavaRapidoId": {
+            "type": "string"
+          },
+          "veiculoId": {
+            "type": "string"
+          },
+          "data": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "observacao": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "lavaRapidoId",
+          "veiculoId",
+          "data"
         ]
       }
     }
@@ -617,6 +731,435 @@
         "responses": {
           "200": {
             "description": "Cliente deletado com sucesso"
+          }
+        }
+      }
+    },
+    "/customers/nearby": {
+      "get": {
+        "tags": [
+          "Lava Rápidos"
+        ],
+        "summary": "Listar lava rápidos próximos (geolocalização)",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "latitude",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "longitude",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "maxDistance",
+            "in": "query",
+            "schema": {
+              "type": "number",
+              "description": "Raio em metros (padrão 10000)"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de lava rápidos ordenada por distância (distance em km)"
+          }
+        }
+      }
+    },
+    "/customers/public/{id}": {
+      "get": {
+        "tags": [
+          "Lava Rápidos"
+        ],
+        "summary": "Detalhes públicos de um lava rápido",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detalhes do lava rápido"
+          },
+          "404": {
+            "description": "Lava rápido não encontrado"
+          }
+        }
+      }
+    },
+    "/veiculo-cliente/register": {
+      "post": {
+        "tags": [
+          "Veículos do Cliente"
+        ],
+        "summary": "Cadastrar veículo do consumidor",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VeiculoCliente"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Veículo cadastrado"
+          },
+          "409": {
+            "description": "Placa já cadastrada"
+          }
+        }
+      }
+    },
+    "/veiculo-cliente": {
+      "get": {
+        "tags": [
+          "Veículos do Cliente"
+        ],
+        "summary": "Listar veículos do consumidor logado",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de veículos"
+          }
+        }
+      }
+    },
+    "/veiculo-cliente/{id}": {
+      "get": {
+        "tags": [
+          "Veículos do Cliente"
+        ],
+        "summary": "Buscar veículo do consumidor por ID",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Veículo encontrado"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Veículos do Cliente"
+        ],
+        "summary": "Atualizar veículo do consumidor",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VeiculoCliente"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Veículo atualizado"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Veículos do Cliente"
+        ],
+        "summary": "Remover veículo do consumidor",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Veículo removido"
+          }
+        }
+      }
+    },
+    "/agendamentos/register": {
+      "post": {
+        "tags": [
+          "Agendamentos"
+        ],
+        "summary": "Criar agendamento (o veículo entra automaticamente na fila do lava rápido)",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Agendamento"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Agendamento criado"
+          },
+          "400": {
+            "description": "Lava rápido inativo ou veículo inválido"
+          }
+        }
+      }
+    },
+    "/agendamentos/dashboard": {
+      "get": {
+        "tags": [
+          "Agendamentos"
+        ],
+        "summary": "Agendamentos do lava rápido do dono logado",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "agendado",
+                "confirmado",
+                "concluido",
+                "cancelado"
+              ]
+            }
+          },
+          {
+            "name": "inicio",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "fim",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de agendamentos do lava rápido"
+          }
+        }
+      }
+    },
+    "/agendamentos/meus": {
+      "get": {
+        "tags": [
+          "Agendamentos"
+        ],
+        "summary": "Agendamentos do consumidor logado",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de agendamentos do consumidor"
+          }
+        }
+      }
+    },
+    "/agendamentos/{id}": {
+      "get": {
+        "tags": [
+          "Agendamentos"
+        ],
+        "summary": "Buscar agendamento por ID (dono do lava rápido ou consumidor)",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Agendamento encontrado"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Agendamentos"
+        ],
+        "summary": "Atualizar status do agendamento (agendado, confirmado, concluido, cancelado)",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "agendado",
+                      "confirmado",
+                      "concluido",
+                      "cancelado"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Agendamento atualizado"
+          }
+        }
+      }
+    },
+    "/agendamentos/{id}/cancelar": {
+      "patch": {
+        "tags": [
+          "Agendamentos"
+        ],
+        "summary": "Cancelar agendamento (consumidor)",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Agendamento cancelado"
           }
         }
       }

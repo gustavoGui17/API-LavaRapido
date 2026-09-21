@@ -65,6 +65,43 @@ const findById = async (req, res) => {
     }
 };
 
+const findPublic = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const customer = await customerService.findByIdService(id);
+
+        if (!customer || customer.status !== "ativo") {
+            return res.status(404).send({ message: "Lava rápido não encontrado" });
+        }
+
+        const { user, documento, documentoTipo, createdAt, ...dados } = customer.toObject();
+
+        return res.status(200).send({ lavaRapido: dados });
+    } catch (err) {
+        return res.status(500).send({ message: err.message });
+    }
+};
+
+const findNearby = async (req, res) => {
+    try {
+        const { latitude, longitude, maxDistance, limit, search } = req.query;
+
+        const results = await customerService.findNearbyService({
+            latitude,
+            longitude,
+            maxDistance,
+            limit,
+            search,
+        });
+
+        return res.status(200).send({ results });
+    } catch (err) {
+        const status = err.statusCode || 500;
+        return res.status(status).send({ message: err.message });
+    }
+};
+
 const update = async (req, res) => {
     try {
         const { id } = req.params;
@@ -100,6 +137,8 @@ export default {
     create,
     findAll,
     findById,
+    findPublic,
+    findNearby,
     update,
     remove
 };

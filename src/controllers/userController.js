@@ -2,9 +2,9 @@ import userService from "../services/userService.js"
 
 const create = async (req, res) => {
     try {
-        const { name, email, password } = req.body;
+        const { name, nome, email, password } = req.body;
 
-        if (!name || !email || !password) {
+        if ((!name && !nome) || !email || !password) {
             return res.status(400).send({ message: "Preencha todos os campos obrigatórios" });
         }
 
@@ -15,15 +15,19 @@ const create = async (req, res) => {
         const user = await userService.createService(req.body);
 
         return res.status(201).send({
-            message: "Usuário criado com sucesso",
+            message: "Conta criada com sucesso",
             user: {
                 id: user._id,
                 name: user.name,
                 email: user.email,
+                role: user.role,
             },
         });
 
     } catch (err) {
+        if (err.code === 11000) {
+            return res.status(409).send({ message: "Este e-mail já está cadastrado" });
+        }
         console.error(err);
         return res.status(500).send({ message: err.message });
     }

@@ -30,6 +30,11 @@ const veiculoSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
+    agendamento: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Agendamento',
+        default: null
+    },
     finishedAt: {
         type: Date,
         default: null

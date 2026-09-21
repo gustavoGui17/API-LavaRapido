@@ -6,6 +6,8 @@ import { authMiddleware } from "../middlewares/authMiddlerware.js";
 const router = Router();
 
 router.post("/register", authMiddleware, adminMiddleware, customerController.create);
+router.get("/nearby", authMiddleware, customerController.findNearby);
+router.get("/public/:id", authMiddleware, validId, customerController.findPublic);
 router.get("/", authMiddleware, adminMiddleware, customerController.findAll);
 router.get("/:id", authMiddleware, adminMiddleware, validId, customerController.findById);
 router.patch("/:id", authMiddleware, adminMiddleware, validId, customerController.update);

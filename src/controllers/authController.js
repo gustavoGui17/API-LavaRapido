@@ -14,6 +14,9 @@ const publicUser = (user, customerStatus) => ({
   name: user.name,
   email: user.email,
   role: user.role,
+  telefone: user.telefone || "",
+  endereco: user.endereco || null,
+  location: user.location || null,
   customerStatus: customerStatus || "ativo",
 });
 
