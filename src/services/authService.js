@@ -2,7 +2,7 @@ import User from '../models/User.js'
 import jwt from 'jsonwebtoken'
 
 export const loginService = (email) => {
-  return User.findOne({ email }).select("+password");
+  return User.findOne({ email: String(email).trim().toLowerCase() }).select("+password");
 };
 
 export const generateToken = (id) => {

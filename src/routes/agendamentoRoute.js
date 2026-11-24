@@ -11,5 +11,6 @@ router.get("/meus", authMiddleware, agendamentoController.meusAgendamentos);
 router.get("/:id", authMiddleware, validId, agendamentoController.findById);
 router.patch("/:id", authMiddleware, validId, agendamentoController.updateStatus);
 router.patch("/:id/cancelar", authMiddleware, validId, agendamentoController.cancelar);
+router.patch("/:id/finalizar", authMiddleware, validId, agendamentoController.finalizar);
 
 export default router;

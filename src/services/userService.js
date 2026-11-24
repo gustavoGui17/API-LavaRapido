@@ -34,14 +34,27 @@ const findAllService = async () => {
 
 const findByIdService = (id) => User.findById(id);
 
-const updateService = async (id, name, email, password) => {
-    const updateData = { name, email };
+const updateService = async (id, dados = {}) => {
+    const updateData = {};
 
-    if (password) {
-        updateData.password = await bcrypt.hash(password, 10);
+    if (dados.name !== undefined) updateData.name = dados.name;
+    if (dados.email !== undefined) updateData.email = dados.email;
+    if (dados.telefone !== undefined) updateData.telefone = dados.telefone;
+    if (dados.endereco !== undefined) updateData.endereco = dados.endereco;
+
+    if (dados.location !== undefined) {
+        const location = normalizeLocation(dados.location);
+        if (location) updateData.location = location;
     }
 
-    return User.findByIdAndUpdate(id, updateData, { new: true });
+    if (dados.password) {
+        updateData.password = await bcrypt.hash(dados.password, 10);
+    }
+
+    return User.findByIdAndUpdate(id, updateData, {
+        new: true,
+        runValidators: true,
+    });
 };
 
 const removeService = (id) => User.findByIdAndDelete(id);

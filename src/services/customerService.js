@@ -89,9 +89,31 @@ const findNearbyService = async ({ latitude, longitude, maxDistance, limit, sear
             ? Number(maxDistance)
             : 10000;
 
-    const query = {
-        status: status || "ativo",
-        location: {
+    const termo = search
+        ? String(search).trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+        : "";
+
+    const query = { status: status || "ativo" };
+
+    if (termo) {
+        const condicoes = [
+            { nome: { $regex: termo, $options: "i" } },
+            { nomeFantasia: { $regex: termo, $options: "i" } },
+            { "endereco.logradouro": { $regex: termo, $options: "i" } },
+            { "endereco.numero": { $regex: termo, $options: "i" } },
+            { "endereco.bairro": { $regex: termo, $options: "i" } },
+            { "endereco.cidade": { $regex: termo, $options: "i" } },
+            { "endereco.estado": { $regex: termo, $options: "i" } },
+        ];
+
+        const cep = termo.replace(/\D/g, "");
+        if (cep) {
+            condicoes.push({ "endereco.cep": { $regex: cep, $options: "i" } });
+        }
+
+        query.$or = condicoes;
+    } else {
+        query.location = {
             $near: {
                 $geometry: {
                     type: "Point",
@@ -99,15 +121,7 @@ const findNearbyService = async ({ latitude, longitude, maxDistance, limit, sear
                 },
                 $maxDistance: maxDistancia,
             },
-        },
-    };
-
-    if (search) {
-        query.$or = [
-            { nome: { $regex: search, $options: "i" } },
-            { nomeFantasia: { $regex: search, $options: "i" } },
-            { "endereco.cidade": { $regex: search, $options: "i" } },
-        ];
+        };
     }
 
     const lavaRapidos = await Customer.find(query)

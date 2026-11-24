@@ -9,7 +9,7 @@ const cookieOptions = {
   maxAge: 24 * 60 * 60 * 1000,
 };
 
-const publicUser = (user, customerStatus) => ({
+export const publicUser = (user, customerStatus) => ({
   id: user._id,
   name: user.name,
   email: user.email,

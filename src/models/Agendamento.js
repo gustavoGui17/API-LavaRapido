@@ -37,6 +37,24 @@ const agendamentoSchema = new mongoose.Schema({
         trim: true,
         default: "",
     },
+    motivoFinalizacao: {
+        type: String,
+        trim: true,
+        default: "",
+    },
+    finalizadoEm: {
+        type: Date,
+        default: null,
+    },
+    canceladoEm: {
+        type: Date,
+        default: null,
+    },
+    alteradoPor: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        default: null,
+    },
     createdAt: {
         type: Date,
         default: Date.now,

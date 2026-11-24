@@ -62,6 +62,8 @@ const findAllByLavaRapido = async (customerId, { status, inicio, fim }) => {
 
     if (status) {
         filtro.status = status;
+    } else {
+        filtro.status = { $in: ["agendado", "confirmado"] };
     }
 
     if (inicio || fim) {
@@ -92,7 +94,8 @@ const findByIdService = (id) =>
 const isOwner = (customer, userId) =>
     customer && customer.user && customer.user.toString() === String(userId);
 
-const updateStatusService = async (id, status, userIdEd) => {
+const updateStatusService = async (id, status, userIdEd, options = {}) => {
+    const { motivoFinalizacao = "", somenteDono = false } = options;
     const agendamento = await Agendamento.findById(id).populate("lavaRapido");
 
     if (!agendamento) {
@@ -103,14 +106,14 @@ const updateStatusService = async (id, status, userIdEd) => {
 
     const donoLavaRapido = isOwner(agendamento.lavaRapido, userIdEd);
 
-    if (!donoLavaRapido && agendamento.cliente.toString() !== String(userIdEd)) {
-        const err = new Error("Você não tem permissão para alterar este agendamento");
+    if (somenteDono && !donoLavaRapido) {
+        const err = new Error("Apenas o dono do lava rápido pode finalizar este agendamento");
         err.statusCode = 403;
         throw err;
     }
 
-    if (status === "cancelado" && agendamento.cliente.toString() !== String(userIdEd) && !donoLavaRapido) {
-        const err = new Error("Apenas o cliente pode cancelar o agendamento");
+    if (!donoLavaRapido && agendamento.cliente.toString() !== String(userIdEd)) {
+        const err = new Error("Você não tem permissão para alterar este agendamento");
         err.statusCode = 403;
         throw err;
     }
@@ -122,19 +125,37 @@ const updateStatusService = async (id, status, userIdEd) => {
         throw err;
     }
 
+    const agora = new Date();
     agendamento.status = status;
+    agendamento.alteradoPor = userIdEd;
+
+    if (status === "concluido") {
+        agendamento.finalizadoEm = agora;
+        agendamento.canceladoEm = null;
+        agendamento.motivoFinalizacao = "";
+    } else if (status === "cancelado") {
+        agendamento.canceladoEm = agora;
+        agendamento.finalizadoEm = null;
+        agendamento.motivoFinalizacao = String(motivoFinalizacao || "").trim();
+    } else {
+        agendamento.finalizadoEm = null;
+        agendamento.canceladoEm = null;
+        agendamento.motivoFinalizacao = "";
+    }
+
     await agendamento.save();
 
     const STATUS_FILA = {
         agendado: "pendente",
         confirmado: "em atendimento",
         concluido: "finalizado",
+        cancelado: "finalizado",
     };
 
     if (agendamento.veiculoFila && STATUS_FILA[status]) {
         const dadosFila = { status: STATUS_FILA[status] };
-        if (status === "concluido") {
-            dadosFila.finishedAt = new Date();
+        if (STATUS_FILA[status] === "finalizado") {
+            dadosFila.finishedAt = agora;
         }
         await Veiculo.findByIdAndUpdate(agendamento.veiculoFila, dadosFila, { new: true });
     }
@@ -142,8 +163,14 @@ const updateStatusService = async (id, status, userIdEd) => {
     return agendamento;
 };
 
-const cancelService = (id, userIdEd) =>
-    updateStatusService(id, "cancelado", userIdEd);
+const cancelService = (id, userIdEd, motivoFinalizacao) =>
+    updateStatusService(id, "cancelado", userIdEd, { motivoFinalizacao });
+
+const finalizarService = (id, userIdEd, motivoFinalizacao) =>
+    updateStatusService(id, "cancelado", userIdEd, {
+        motivoFinalizacao,
+        somenteDono: true,
+    });
 
 export default {
     createService,
@@ -152,4 +179,5 @@ export default {
     findByIdService,
     updateStatusService,
     cancelService,
+    finalizarService,
 };

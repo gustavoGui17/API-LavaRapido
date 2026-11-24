@@ -94,3 +94,22 @@ export const notifyStatusChange = async (veiculo, novoStatus) => {
 
     return sendWhatsAppMessage(contato, message);
 };
+
+export const notifyAgendamentoFinalizado = async (agendamento, motivo) => {
+    const cliente = agendamento?.cliente;
+    const veiculo = agendamento?.veiculo;
+
+    if (!cliente?.telefone) {
+        console.warn("[WhatsApp] Cliente sem telefone - notificação ignorada");
+        return null;
+    }
+
+    const nomeCliente = cliente.name || "cliente";
+    const descricaoVeiculo = [veiculo?.modelo, veiculo?.placa]
+        .filter(Boolean)
+        .join(" - ");
+    const veiculoTexto = descricaoVeiculo ? ` (${descricaoVeiculo})` : "";
+    const message = `Olá, ${nomeCliente}! Seu agendamento${veiculoTexto} foi finalizado pelo lava rápido. Motivo: ${motivo}. Pedimos desculpas pelo transtorno.`;
+
+    return sendWhatsAppMessage(cliente.telefone, message);
+};

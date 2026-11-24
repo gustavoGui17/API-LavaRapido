@@ -1,4 +1,5 @@
 import userService from "../services/userService.js"
+import { publicUser } from "./authController.js"
 
 const create = async (req, res) => {
     try {
@@ -59,25 +60,47 @@ const findById = async (req, res) => {
 
 const update = async (req, res) => {
     try {
-        const { name, email, password } = req.body;
+        const { name, email, password, telefone, endereco, location } = req.body;
 
-        if (!name && !email && !password) {
-            res.status(400).send({ message: "Preencha pelo menos um campo para editar" });
-            return res.status(400)
+        const temAlteracao = [name, email, password, telefone, endereco, location]
+            .some((valor) => valor !== undefined && valor !== null && valor !== "");
+
+        if (!temAlteracao) {
+            return res.status(400).send({ message: "Preencha pelo menos um campo para editar" });
         }
 
-        const { id, user } = req;
+        if (password && String(password).length < 6) {
+            return res.status(400).send({ message: "A senha precisa ter no mínimo 6 caracteres" });
+        }
 
-        await userService.updateService(
-            id,
-            name,
-            email,
-            password
-        )
+        if (email !== undefined && !String(email).trim()) {
+            return res.status(400).send({ message: "Informe um e-mail válido" });
+        }
 
-        res.send({ message: "Usuário atualizado com sucesso" })
+        const dados = {};
+        if (name !== undefined) dados.name = String(name).trim();
+        if (email !== undefined) dados.email = String(email).trim().toLowerCase();
+        if (telefone !== undefined) dados.telefone = String(telefone).trim();
+        if (endereco !== undefined) dados.endereco = endereco;
+        if (location !== undefined) dados.location = location;
+        if (password) dados.password = password;
+
+        const user = await userService.updateService(req.params.id, dados);
+
+        if (!user) {
+            return res.status(404).send({ message: "Usuário não encontrado" });
+        }
+
+        return res.send({
+            message: "Usuário atualizado com sucesso",
+            user: publicUser(user),
+        });
     } catch (err) {
-        res.status(500).send({ message: err.message })
+        if (err.code === 11000) {
+            return res.status(409).send({ message: "Este e-mail já está cadastrado" });
+        }
+        console.error("ERRO UPDATE USER:", err);
+        return res.status(500).send({ message: err.message });
     }
 
 };

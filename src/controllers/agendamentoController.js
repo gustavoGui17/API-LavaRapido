@@ -1,4 +1,5 @@
 import agendamentoService from "../services/agendamentoService.js";
+import { notifyAgendamentoFinalizado } from "../services/whatsappService.js";
 import Customer from "../models/Customer.js";
 
 const handleError = (err, res) => {
@@ -119,13 +120,51 @@ const updateStatus = async (req, res) => {
 const cancelar = async (req, res) => {
     try {
         const { id } = req.params;
+        const motivoFinalizacao = String(req.body?.motivo || "").trim();
 
-        await agendamentoService.cancelService(id, req.user.id);
+        const agendamento = await agendamentoService.cancelService(
+            id,
+            req.user.id,
+            motivoFinalizacao
+        );
 
-        return res.status(200).send({ message: "Agendamento cancelado com sucesso" });
+        return res.status(200).send({
+            message: "Agendamento cancelado com sucesso",
+            agendamento,
+        });
     } catch (err) {
         return handleError(err, res);
     }
 };
 
-export default { create, dashboard, meusAgendamentos, findById, updateStatus, cancelar };
+const finalizar = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const motivoFinalizacao = String(req.body?.motivo || "").trim();
+
+        if (!motivoFinalizacao) {
+            return res.status(400).send({ message: "Informe o motivo da finalização" });
+        }
+
+        await agendamentoService.finalizarService(
+            id,
+            req.user.id,
+            motivoFinalizacao
+        );
+
+        const agendamento = await agendamentoService.findByIdService(id);
+
+        notifyAgendamentoFinalizado(agendamento, motivoFinalizacao).catch((err) => {
+            console.error("[WhatsApp] Falha ao notificar finalização:", err.message);
+        });
+
+        return res.status(200).send({
+            message: "Agendamento finalizado com sucesso",
+            agendamento,
+        });
+    } catch (err) {
+        return handleError(err, res);
+    }
+};
+
+export default { create, dashboard, meusAgendamentos, findById, updateStatus, cancelar, finalizar };

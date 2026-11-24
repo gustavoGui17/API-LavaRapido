@@ -11,6 +11,7 @@ import {
 import { notifyStatusChange } from "../services/whatsappService.js";
 
 import Veiculo from "../models/Veiculo.js";
+import Agendamento from "../models/Agendamento.js";
 
 const create = async (req, res) => {
     try {
@@ -213,6 +214,18 @@ const update = async (req, res) => {
 
         if (statusAtual === "finalizado" && statusAnterior !== "finalizado") {
             dados.finishedAt = new Date();
+
+            if (veiculo.agendamento) {
+                await Agendamento.findByIdAndUpdate(veiculo.agendamento, {
+                    $set: {
+                        status: "concluido",
+                        finalizadoEm: new Date(),
+                        canceladoEm: null,
+                        motivoFinalizacao: "",
+                        alteradoPor: req.user.id,
+                    },
+                });
+            }
         } else if (
             statusAtual &&
             statusAtual !== "finalizado" &&
